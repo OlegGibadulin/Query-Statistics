@@ -1,2 +1,3 @@
 # Query-Statistics
-Maps Me internship project
+
+Query parsing and statistics calculation
