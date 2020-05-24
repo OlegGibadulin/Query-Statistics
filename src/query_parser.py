@@ -3,7 +3,7 @@ from enum import Enum
 
 from analyzer import Analyzer
 from utils import Utils
-from statistics import Statistics
+from collector import Collector
 from worker import Worker
 
 class Direction(Enum):
@@ -20,18 +20,19 @@ class QueryParser:
     """
     def __init__(self, filename):
         self.__filename = filename
-        self.__stat = Statistics()
+        self.__stat = Collector()
         self.__worker = None
         self.__prev_row = None
         self.__lcl_max_row = None
     
     def run(self):
         """Start parsing input file"""
-        with open(self.__filename) as f:
+        with open(self.__filename, "r", encoding='utf-8', errors='ignore') as f:
             reader = DictReader(f, delimiter=';')
             self.__search_queries(reader)
     
-    def get_stat(self):
+    @property
+    def stat(self):
         return self.__stat
 
     def __search_queries(self, reader):
@@ -50,13 +51,19 @@ class QueryParser:
         for cur_row in reader:
             prev_query = self.__prev_row['query']
             prev_uid = self.__prev_row['uid']
-            prev_dt = Utils.get_datetime_from_str(self.__prev_row['datetime'])
             prev_locale = self.__prev_row['locale']
 
             cur_query = cur_row['query']
             cur_uid = cur_row['uid']
-            cur_dt = Utils.get_datetime_from_str(cur_row['datetime'])
             cur_locale = cur_row['locale']
+            
+            try:
+                prev_dt = Utils.get_datetime_from_str(self.__prev_row['datetime'])
+                cur_dt = Utils.get_datetime_from_str(cur_row['datetime'])
+            except (ValueError, IndexError):
+                #TODO: Do it via logging 
+                # print("ERROR in src: ", cur_row)
+                continue
 
             if prev_uid != cur_uid or \
                 not Analyzer.is_acceptable_datetime(prev_dt, cur_dt) or \
@@ -159,8 +166,3 @@ class QueryParser:
     
     def __create_storage(self, row):
         self.__worker = Worker(self.__stat)
-
-
-
-
-

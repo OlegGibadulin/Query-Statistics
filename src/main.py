@@ -1,13 +1,24 @@
+import sys
+
 from query_parser import QueryParser
 from reporter import Reporter
 
 if __name__ == "__main__":
-    parser = QueryParser('raw_search_data.csv')
-    parser.run()
+    filename = 'raw_search_data.csv'
+    if len(sys.argv) == 2:
+        filename = sys.argv[1]
+
+    parser = QueryParser(filename)
+    try:
+        parser.run()
+    except FileNotFoundError:
+        print("File does't exist")
+        exit(1)
+
     reporter = Reporter(parser.stat)
 
     #TODO: Make file output
-    print("\n\nREPORT")
+    print("REPORT")
     
     print("\nQuery top for RUSSIAN language of device WITHOUT categories")
     print(reporter.get_top_ru_queries(10, with_category=False))

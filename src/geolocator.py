@@ -7,7 +7,7 @@ class Geolocator:
     """Determines the location by coordinates"""
     __geolocator = Nominatim()
     
-    def __get_state(coords):
+    def get_state(coords):
         """Finds the city/state by coordinates"""
         coords_str = '{}, {}'.format(coords[0], coords[1])
         location = Geolocator.__geolocator.reverse(coords_str, exactly_one=True)
@@ -31,10 +31,12 @@ class MoscowIndentifier:
     """Indentify whether the coordinates point to Moscow"""
     def is_Moscow(gps):
         """Compares coordinates in Mercator with the coordinates of Moscow"""
+        if gps == 'None':
+            return False
         coords = Geolocator.get_lat_long_from_merc(gps)
         if not MoscowIndentifier.is_Moscow_simple(coords):
             return False
-        return Geolocator.__get_state(coords) == 'Москва'
+        return Geolocator.get_state(coords) == 'Москва'
     
     def is_Moscow_simple(coords):
         """Compares coordinates with approximate coordinates of Moscow"""
