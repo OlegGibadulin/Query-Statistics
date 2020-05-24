@@ -26,8 +26,9 @@ class Worker:
             add_query(query_data)
     
     def __is_unique_query(self, query_data):
-        #TODO: Make a correct condition for better analyzing requests
-        # from a single user. This function is not used yet.
+        #TODO: This function is not used yet.
+        # Need to make a better condition
+        # for better analyzing requests from a single user.
         prob_query = query_data['query']
         prob_dt = query_data['datetime']
         prob_locale = query_data['locale']
@@ -41,10 +42,3 @@ class Worker:
                     Analyzer.is_correction(query, prob_query):
                 return False
         return True
-
-
-
-
-
-
-

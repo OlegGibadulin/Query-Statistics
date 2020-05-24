@@ -51,24 +51,21 @@ class QueryParser:
         for cur_row in reader:
             prev_query = self.__prev_row['query']
             prev_uid = self.__prev_row['uid']
-            prev_locale = self.__prev_row['locale']
 
             cur_query = cur_row['query']
             cur_uid = cur_row['uid']
-            cur_locale = cur_row['locale']
             
             try:
                 prev_dt = Utils.get_datetime_from_str(self.__prev_row['datetime'])
                 cur_dt = Utils.get_datetime_from_str(cur_row['datetime'])
             except (ValueError, IndexError):
                 #TODO: Do it via logging 
-                # print("ERROR in src: ", cur_row)
+                print("ERROR in src: ", cur_row)
                 continue
 
             if prev_uid != cur_uid or \
-                not Analyzer.is_acceptable_datetime(prev_dt, cur_dt) or \
-                cur_locale != prev_locale:
-                # Time, senders or locale of prev and cur queries are
+                not Analyzer.is_acceptable_datetime(prev_dt, cur_dt):
+                # Time or senders of prev and cur queries are
                 # different. Analyzes prev local maximum and prev query.
                 if self.__analyze_max_and_end(lcl_max, prev_query):
                     self.__store_query(self.__prev_row)
