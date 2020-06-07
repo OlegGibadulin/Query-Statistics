@@ -1,5 +1,7 @@
 from csv import DictReader
 from enum import Enum
+import logging
+import json
 
 from analyzer import Analyzer
 from utils import Utils
@@ -59,8 +61,8 @@ class QueryParser:
                 prev_dt = Utils.get_datetime_from_str(self.__prev_row['datetime'])
                 cur_dt = Utils.get_datetime_from_str(cur_row['datetime'])
             except (ValueError, IndexError):
-                #TODO: Do it via logging 
-                print("ERROR in src: ", cur_row)
+                logging.basicConfig(filename='query.log', filemode='w', format='%(levelname)s - %(message)s\n')
+                logging.warning('wrong query string: ' + json.dumps(cur_row))
                 continue
 
             if prev_uid != cur_uid or \

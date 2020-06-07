@@ -1,5 +1,6 @@
 from geopy.geocoders import Nominatim
 import math
+# import pyproj
 
 from utils import Utils
 
@@ -19,6 +20,9 @@ class Geolocator:
         return state
     
     def merc_to_lat_long(coords):
+        # Using pyproj also gives the wrong result
+        # p = pyproj.Proj("+proj=merc +ellps=WGS84")
+        # coords[0], coords[1] = p(coords[0], coords[1], inverse=True)
         coords[1] = math.degrees(2*math.atan(math.tanh(0.5*math.radians(coords[1]))))
         return coords
 
